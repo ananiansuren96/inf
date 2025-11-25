@@ -29,6 +29,10 @@ class HomeView(TemplateView):
                 category_news[cat] = news
         context['category_news'] = category_news
 
+        # Video News
+        video_news = Article.objects.filter(is_published=True, is_video=True)[:3]
+        context['video_news'] = video_news
+
         # Trending (Most viewed in last 24h - simplified to just most viewed for now)
         context['trending'] = Article.objects.filter(is_published=True).order_by('-views')[:5]
         

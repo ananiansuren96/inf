@@ -72,11 +72,11 @@
 {% endfor %}
 
 <!-- Video Section -->
+{% if video_news %}
 <div class="bg-dark text-white p-4 mb-5 rounded">
     <h3 class="mb-4 border-bottom border-secondary pb-2">Video News</h3>
     <div class="row">
-        <!-- Placeholder for Video News logic - currently showing random articles as example -->
-        {% for article in side_news|slice:":3" %}
+        {% for article in video_news %}
         <div class="col-md-4 mb-4">
             <div class="card bg-secondary border-0 text-white h-100">
                 <div class="ratio ratio-16x9">
@@ -101,6 +101,7 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
 
 <!-- Trending Section -->
 <div class="bg-light p-4 rounded mb-5">
