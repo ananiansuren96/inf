@@ -21,9 +21,13 @@
         {% if article.video_url %}
         <div class="ratio ratio-16x9 mb-4">
             <iframe src="{{ article.video_url|embed_url }}" title="{{ article.title }}"
+                referrerpolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
+                allowfullscreen>
+            </iframe>
+
         </div>
+
         {% elif article.image %}
         <div class="mb-4">
             <img src="{{ article.image.url }}" class="img-fluid rounded w-100" alt="{{ article.title }}">
