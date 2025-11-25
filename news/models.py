@@ -44,6 +44,7 @@ class Article(models.Model):
 
     # Video
     video_url = models.URLField(blank=True, help_text="YouTube or Vimeo URL")
+    is_video = models.BooleanField(default=False, verbose_name="Video Post", help_text="Check this if the article is primarily a video.")
 
     class Meta:
         ordering = ['-created_at']
