@@ -12,6 +12,8 @@ register = template.Library()
 
 YOUTUBE_WATCH_REGEX = re.compile(r"(?:https?://)?(?:www\.)?youtube\.com/watch\?v=([^&]+)")
 YOUTUBE_SHORT_REGEX = re.compile(r"(?:https?://)?(?:www\.)?youtu\.be/([^?&]+)")
+YOUTUBE_SHORTS_REGEX = re.compile(r"(?:https?://)?(?:www\.)?youtube\.com/shorts/([^?&]+)")
+YOUTUBE_LIVE_REGEX = re.compile(r"(?:https?://)?(?:www\.)?youtube\.com/live/([^?&]+)")
 VIMEO_REGEX = re.compile(r"(?:https?://)?(?:www\.)?vimeo\.com/(\d+)")
 
 @register.filter(name='embed_url')
@@ -25,9 +27,29 @@ def embed_url(url):
     m = YOUTUBE_WATCH_REGEX.search(url)
     if m:
         video_id = m.group(1)
-        return f"https://www.youtube.com/embed/{video_id}"
+        embed = f"https://www.youtube.com/embed/{video_id}"
+        parsed = urlparse(url)
+        qs = parse_qs(parsed.query)
+        if 'list' in qs:
+            embed += f"?list={qs['list'][0]}"
+        return embed
     # YouTube short URL
     m = YOUTUBE_SHORT_REGEX.search(url)
+    if m:
+        video_id = m.group(1)
+        embed = f"https://www.youtube.com/embed/{video_id}"
+        parsed = urlparse(url)
+        qs = parse_qs(parsed.query)
+        if 'list' in qs:
+            embed += f"?list={qs['list'][0]}"
+        return embed
+    # YouTube Shorts
+    m = YOUTUBE_SHORTS_REGEX.search(url)
+    if m:
+        video_id = m.group(1)
+        return f"https://www.youtube.com/embed/{video_id}"
+    # YouTube Live
+    m = YOUTUBE_LIVE_REGEX.search(url)
     if m:
         video_id = m.group(1)
         return f"https://www.youtube.com/embed/{video_id}"
