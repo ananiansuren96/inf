@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load video_embed %}
+
+{% block title %}{{ article.title }} - INFOMAX{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Article Header -->
+        <div class="mb-4">
+            <span class="badge bg-primary mb-2">{{ article.category.name }}</span>
+            <h1 class="fw-bold mb-3">{{ article.title }}</h1>
+            <div class="d-flex align-items-center text-muted">
+                <span class="me-3"><i class="fas fa-user me-1"></i> {{ article.author.username }}</span>
+                <span class="me-3"><i class="fas fa-calendar me-1"></i> {{ article.created_at|date:"F j, Y" }}</span>
+                <span><i class="fas fa-eye me-1"></i> {{ article.views }} views</span>
+            </div>
+        </div>
+
+        <!-- Featured Image or Video -->
+        {% if article.video_url %}
+        <div class="ratio ratio-16x9 mb-4">
+            <iframe src="{{ article.video_url|embed_url }}" title="{{ article.title }}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+        {% elif article.image %}
+        <div class="mb-4">
+            <img src="{{ article.image.url }}" class="img-fluid rounded w-100" alt="{{ article.title }}">
+        </div>
+        {% endif %}
+
+        <!-- Article Content -->
+        <article class="mb-5 fs-5 article-content">
+            {{ article.content|safe }}
+        </article>
+
+        <!-- Gallery -->
+        {% if article.gallery.all %}
+        <div id="articleGallery" class="carousel slide mb-5" data-bs-ride="carousel">
+            <div class="carousel-inner rounded">
+                {% for image in article.gallery.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.caption }}">
+                    {% if image.caption %}
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <p class="mb-0">{{ image.caption }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#articleGallery" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#articleGallery" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        {% endif %}
+
+        <!-- Tags -->
+        {% if article.tags.all %}
+        <div class="mb-4">
+            <strong>Tags:</strong>
+            {% for tag in article.tags.all %}
+            <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Share Buttons -->
+        <div class="mb-5">
+            <h5>Share this article:</h5>
+            <a href="#" class="btn btn-primary btn-sm me-2"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="#" class="btn btn-info btn-sm me-2 text-white"><i class="fab fa-twitter"></i> Twitter</a>
+            <a href="#" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <h4 class="mb-3 border-bottom pb-2">Related News</h4>
+        <div class="list-group list-group-flush">
+            {% for related in related_news %}
+            <div class="list-group-item px-0">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1"><a href="{% url 'article_detail' related.slug %}"
+                            class="text-dark text-decoration-none">{{ related.title }}</a></h6>
+                </div>
+                <small class="text-muted">{{ related.created_at|date:"M j" }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

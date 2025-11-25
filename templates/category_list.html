@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - INFOMAX{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4 d-flex justify-content-between align-items-center border-bottom pb-2">
+        <h1 class="mb-0">{{ category.name }}</h1>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" href="?sort=newest">Newest</a></li>
+                <li><a class="dropdown-item" href="?sort=popular">Most Viewed</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        {% for article in articles %}
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="row g-0">
+                {% if article.image %}
+                <div class="col-md-4">
+                    <img src="{{ article.image.url }}" class="img-fluid rounded-start h-100" alt="{{ article.title }}"
+                        style="object-fit: cover;">
+                </div>
+                {% endif %}
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'article_detail' article.slug %}"
+                                class="text-dark text-decoration-none">{{ article.title }}</a></h5>
+                        <p class="card-text">{{ article.content|striptags|truncatewords:20 }}</p>
+                        <p class="card-text"><small class="text-muted">{{ article.created_at|date:"F j, Y" }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No articles found in this category.</p>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar (Optional) -->
+    <div class="col-lg-4">
+        <!-- Could add popular posts or ads here -->
+    </div>
+</div>
+{% endblock %}
